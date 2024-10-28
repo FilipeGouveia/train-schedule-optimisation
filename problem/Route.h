@@ -17,7 +17,7 @@ class Route {
 public:
     std::string id;
     int totalSeq;
-    std::list<route_path> route_path;
+    std::list<route_path> route_paths;
 };
 
 

@@ -372,7 +372,7 @@ int main(int argc, char **argv) {
                         trs->exit_time="";
                         trs->route=rid;
                         trs->route_section_id=rid+"#"+sid;
-                        trs->route_path=instance.sectionMap[rid][std::stoi(sid)]->route_pathName;
+                        trs->route_path_str=instance.sectionMap[rid][std::stoi(sid)]->route_pathName;
                         for (int j = 0; j < instance.train.size(); ++j) {
                             if(instance.train[j].id.compare(rid)!=0)
                                 continue;
@@ -520,8 +520,8 @@ void genEncoding(int argc, char **argv) {
             printf("0\n");
             for (int j = 0; j < instance.train.size(); ++j) {
                 int s=0;
-                for(route_path rp: instance.route[instance.train[j].route].route_path) {
-                    for (route_section *rs: rp.route_section) {
+                for(route_path rp: instance.route[instance.train[j].route].route_paths) {
+                    for (route_section *rs: rp.route_sections) {
                         PB *p=new PB();
                         for (int i = minV; i < maxV; ++i) {
                             timeV++;
@@ -1494,7 +1494,7 @@ void outputJSONFile(Instance instance) {
             writer.Int(j);
 
             writer.Key("route_path");
-            writer.String(it1->second->route_path.c_str());
+            writer.String(it1->second->route_path_str.c_str());
 
             writer.Key("section_requirement");
             if(it1->second->section_requirement.size()==0)
@@ -1583,7 +1583,7 @@ Instance readOutputJSONFile(char* local) {
                 trs->route_section_id=d["train_runs"].GetArray()[i]["train_run_sections"].GetArray()[j]["route_section_id"].GetString();
             else
                 trs->route_section_id=std::to_string(d["train_runs"].GetArray()[i]["train_run_sections"].GetArray()[j]["route_section_id"].GetInt());
-            trs->route_path=d["train_runs"].GetArray()[i]["train_run_sections"].GetArray()[j]["route_path"].GetString();
+            trs->route_path_str=d["train_runs"].GetArray()[i]["train_run_sections"].GetArray()[j]["route_path"].GetString();
             if(d["train_runs"].GetArray()[i]["train_run_sections"].GetArray()[j].HasMember("section_requirement")){
                 if(!d["train_runs"].GetArray()[i]["train_run_sections"].GetArray()[j]["section_requirement"].IsNull()){
                     trs->section_requirement=d["train_runs"].GetArray()[i]["train_run_sections"].GetArray()[j]["section_requirement"].GetString();
@@ -1944,11 +1944,11 @@ Instance readJSONFile(char* local) {
 
             }
 
-            rp.route_section=rsl;
+            rp.route_sections=rsl;
             rpl.push_front(rp);
 
         }
-        r.route_path=rpl;
+        r.route_paths=rpl;
         r.totalSeq=nSeq;
         rr.insert(std::pair<std::string,Route>(r.id,r));
     }

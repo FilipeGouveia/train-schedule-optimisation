@@ -13,7 +13,7 @@ public:
     std::string exit_time;
     std::string route;
     std::string route_section_id;
-    std::string route_path;
+    std::string route_path_str;
     std::string section_requirement;
 
 
